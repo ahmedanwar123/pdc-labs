@@ -4,22 +4,27 @@
 #include <iostream>
 
 // Problem 1: Kernel to add two vectors
-__global__ void addVectors(float *a, float *b, float *c, size_t size) {
+__global__ void addVectors(float *a, float *b, float *c, size_t size)
+{
     size_t id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < size) {
+    if (id < size)
+    {
         c[id] = a[id] + b[id];
     }
 }
 
 // Kernel to scale random numbers to [-1, 1]
-__global__ void scaleKernel(float *data, size_t size, float scale, float shift) {
+__global__ void scaleKernel(float *data, size_t size, float scale, float shift)
+{
     size_t id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < size) {
+    if (id < size)
+    {
         data[id] = data[id] * scale + shift;
     }
 }
 
-void problem1_cuda() {
+void problem1_cuda()
+{
     const size_t size = 1 << 24; // 2^24
     float *d_a, *d_b, *d_c;
 
@@ -59,12 +64,15 @@ void problem1_cuda() {
 }
 
 // Problem 2: Kernel to normalize 4D vectors
-__global__ void normalizeVectors(float4 *vec, size_t size) {
+__global__ void normalizeVectors(float4 *vec, size_t size)
+{
     size_t id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < size) {
+    if (id < size)
+    {
         float4 v = vec[id];
         float norm = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
-        if (norm > 0.0f) {
+        if (norm > 0.0f)
+        {
             vec[id].x /= norm;
             vec[id].y /= norm;
             vec[id].z /= norm;
@@ -73,7 +81,8 @@ __global__ void normalizeVectors(float4 *vec, size_t size) {
     }
 }
 
-void problem2_cuda() {
+void problem2_cuda()
+{
     const size_t size = 1 << 22; // 2^22
     float4 *d_vec;
 
@@ -113,7 +122,8 @@ void problem2_cuda() {
     curandDestroyGenerator(gen);
 }
 
-int main() {
+int main()
+{
     problem1_cuda();
     problem2_cuda();
     return 0;
