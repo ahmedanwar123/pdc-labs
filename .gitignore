@@ -1081,3 +1081,5 @@ dkms.conf
 # Virtual Environments
 *venv*/
 *env*/
+parallel/
+.vscode/
