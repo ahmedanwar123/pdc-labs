@@ -1,6 +1,7 @@
 #include <vector>
 #include <random>
 #include <iostream>
+#include <chrono>
 
 // Problem 1: Add two vectors of size 2^24
 void problem1_cpp()
@@ -22,6 +23,10 @@ void problem1_cpp()
         b[i] = dis(gen);
     }
 
+    // Add vectors a and b element-wise into c, performed sequentially in a loop.
+    // On a single-core CPU, this operation will take time proportional to the problem size.
+    // The CPU will process one element at a time.
+
     // Add vectors a and b element-wise into c
     for (size_t i = 0; i < size; ++i)
     {
@@ -29,7 +34,7 @@ void problem1_cpp()
     }
 
     // Print the first element of c
-    std::cout << "Problem 1 (C++): First element of c: " << c[0] << std::endl;
+    std::cout << "Problem 1: First element of c: " << c[0] << std::endl;
 }
 
 // Problem 2: Normalize 2^22 4D vectors
@@ -56,6 +61,9 @@ void problem2_cpp()
         vec[i].z = dis(gen);
         vec[i].w = dis(gen);
 
+        // Compute the Euclidean norm and normalize each vector, computation for each vector is done sequentially in a loop.
+        // This is a computationally expensive on the CPU because the task is done element by element.
+
         // Compute the Euclidean norm
         float norm = std::sqrt(vec[i].x * vec[i].x + vec[i].y * vec[i].y + vec[i].z * vec[i].z + vec[i].w * vec[i].w);
 
@@ -70,12 +78,29 @@ void problem2_cpp()
     }
 
     // Print the first normalized vector
-    std::cout << "Problem 2 (C++): First normalized vector: " << vec[0].x << ", " << vec[0].y << ", " << vec[0].z << ", " << vec[0].w << std::endl;
+    std::cout << "Problem 2: First normalized vector: " << vec[0].x << ", " << vec[0].y << ", " << vec[0].z << ", " << vec[0].w << std::endl;
 }
 
+// Measure CPU time for a function
+void measureCPU(void (*func)(), const std::string &label)
+{
+    auto start = std::chrono::high_resolution_clock::now();
+    func();
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = end - start;
+    std::cout << label << " execution time: " << duration.count() << " ms\n";
+}
 int main()
 {
     problem1_cpp();
     problem2_cpp();
+    measureCPU(problem1_cpp, "Problem 1");
+    measureCPU(problem2_cpp, "Problem 2");
     return 0;
 }
+
+/*
+ * Problem 1 execution time: 4891.6 ms
+ * Problem 2 execution time: 2475.75 ms
+ */

@@ -39,6 +39,7 @@ void problem1_cuda()
     curandSetPseudoRandomGeneratorSeed(gen, 1234ULL);
 
     // Generate random numbers in [0, 1) and scale to [-1, 1]
+    // CURAND generates random floats between 0 and 1. We then scale the values to be between -1 and 1.
     curandGenerateUniform(gen, d_a, size);
     curandGenerateUniform(gen, d_b, size);
 
@@ -54,7 +55,7 @@ void problem1_cuda()
     // Copy the first element of c back to host
     float h_c;
     cudaMemcpy(&h_c, d_c, sizeof(float), cudaMemcpyDeviceToHost);
-    std::cout << "Problem 1 (CUDA): First element of c: " << h_c << std::endl;
+    std::cout << "Problem 1: First element of c: " << h_c << std::endl;
 
     // Clean up
     cudaFree(d_a);
@@ -109,22 +110,51 @@ void problem2_cuda()
     cudaFree(d_data);
 
     // Normalize the vectors
+    // Each thread computes the norm of a 4D vector and normalizes it. This is a parallel operation that benefits from the GPU’s many cores.
     blocksPerGrid = (size + threadsPerBlock - 1) / threadsPerBlock;
     normalizeVectors<<<blocksPerGrid, threadsPerBlock>>>(d_vec, size);
 
     // Copy the first normalized vector back to host
     float4 h_vec;
     cudaMemcpy(&h_vec, d_vec, sizeof(float4), cudaMemcpyDeviceToHost);
-    std::cout << "Problem 2 (CUDA): First normalized vector: " << h_vec.x << ", " << h_vec.y << ", " << h_vec.z << ", " << h_vec.w << std::endl;
+    std::cout << "Problem 2: First normalized vector: " << h_vec.x << ", " << h_vec.y << ", " << h_vec.z << ", " << h_vec.w << std::endl;
 
     // Clean up
     cudaFree(d_vec);
     curandDestroyGenerator(gen);
+}
+void measureCuda(void (*func)(), const std::string &label)
+{
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    cudaEventRecord(start);
+    func();
+    cudaEventRecord(stop);
+
+    cudaEventSynchronize(stop);
+    float ms = 0;
+    cudaEventElapsedTime(&ms, start, stop);
+
+    std::cout << label << " execution time: " << ms << " ms\n";
+
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
 }
 
 int main()
 {
     problem1_cuda();
     problem2_cuda();
+    measureCuda(problem1_cuda, "Problem 1");
+    measureCuda(problem2_cuda, "Problem 2");
     return 0;
 }
+/*
+ * Problem 1 execution time: 3.9095 ms
+ * Problem 2 execution time: 3.15635 ms
+ *  The execution time on the GPU is in the millisecond range for both problems, showcasing the speed-up when using a GPU compared to sequential CPU execution.
+ * The GPU handles the problem efficiently by utilizing thousands of threads to compute the vector operations concurrently.
+
+ */
