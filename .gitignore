@@ -1083,3 +1083,8 @@ dkms.conf
 *env*/
 parallel/
 .vscode/
+
+# Ignore compiled binary and object files
+*.out
+*.o
+*.a
