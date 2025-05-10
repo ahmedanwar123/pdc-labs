@@ -1,2 +1,2 @@
 # PDC-labs
-My Solution for Parallel and Distributed Computing Labs Course in E-JUST
+My Solution for Parallel and Distributed Computing Labs Course at E-JUST
