@@ -57,7 +57,7 @@ This repository contains the lab assignments for the **CSE 425 Parallel & Distri
 To explore the labs:
 
 1. Clone this repository: `git clone https://github.com/ahmedanwar123/pdc-labs.git`
-2. Navigate to each lab's Markdown file (e.g., `Lab1-CCR.md`) for detailed explanations and results.
+2. Navigate to each lab's Markdown file for detailed explanations and results.
 3. Use a Markdown viewer with MathJax support to render equations properly.
 
 Each lab includes performance results, mathematical formulations, and insights into parallel computing techniques, making this repository a valuable resource for understanding parallel and distributed systems.
