@@ -37,7 +37,7 @@ ax.set_xlabel("q")
 ax.set_ylabel("γ")
 ax.set_zlabel("F(γ, q)")
 ax.set_title("The General Case and the Compute-to-Communication Ratio")
-ax.view_init(elev=30, azim=225)  # Adjust angles as needed
+ax.view_init(elev=30, azim=225)
 ax.set_zlim(0, 20)
 plt.legend()
 plt.savefig("lab1.png")
